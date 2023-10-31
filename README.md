@@ -1,5 +1,5 @@
 # TextingApplication
-This is a program to allow users to run their own texting servers and allow others along with themselves to connect to each others' servers to text.
+This is a project to allow users to run their own texting servers and allow others along with themselves to connect to each others' servers to text.
 
 # Concepts used in this project
 ~ Networking & Socket programming
