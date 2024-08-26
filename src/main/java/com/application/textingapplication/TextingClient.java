@@ -8,8 +8,11 @@ import java.net.Socket;
 public class TextingClient {
     public static void main(String[] args) {
         Socket soc = null;
+        String ipAddress = "localhost";
+        if(args.length > 0)
+            ipAddress = args[0];
         try {
-            soc = new Socket("localhost", 8096);
+            soc = new Socket(ipAddress, 8096);
             System.out.println("Connected to server.");
             new TextReceiverAntenna1(soc).start();
             new TextTransmitterAntenna1(soc).start();
