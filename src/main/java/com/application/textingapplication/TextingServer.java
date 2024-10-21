@@ -63,25 +63,25 @@ class TextBroadcastAntenna extends Thread {
             BufferedReader br = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             String clientName = nameAcceptor.clientName;
             String input;
-            while((input = br.readLine()) != null) { // this line needs checking
+            while((input = br.readLine()) != null) {
                 ArrayList<Client> clients = ClientCollection.getClients();
                 System.out.println(clientName + ": " + input);
-                if(input.equals("network --clients")) {
-                    System.out.printf("Connected clients (called by %s):%n", clientSocket);
-                    for(Client client: clients) {
-                        if(clientSocket.equals(client.socket())) continue;
-                        System.out.printf("%s ------ %s%n", client.socket(), client.name());
-                    }
-                } else {
-                    for(Client client: clients) {
-                        if(clientSocket.equals(client.socket())) continue;
-                        PrintWriter out = new PrintWriter(client.socket().getOutputStream(), true);
-                        out.println(nameAcceptor.clientName + ": " +input);
-                    }
+                for(Client client: clients) {
+                    if(clientSocket.equals(client.socket())) continue;
+                    PrintWriter out = new PrintWriter(client.socket().getOutputStream(), true);
+                    out.println(nameAcceptor.clientName + ": " +input);
                 }
             }
         } catch(Exception e) {
-            e.printStackTrace();
+            System.out.println("Client disconnected: " + clientSocket);
+        } finally {
+            try {
+               ClientCollection.removeClient(clientSocket);
+               clientSocket.close();
+               System.out.println("Closed socket for: " + clientSocket);
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }
@@ -90,7 +90,7 @@ record Client(Socket socket, String name) {
 }
 
 class ClientCollection {
-    static ArrayList<Client> clients = new ArrayList<>();
+    private static ArrayList<Client> clients = new ArrayList<>();
     synchronized static ArrayList<Client> getClients() {
         return clients;
     }
@@ -99,9 +99,12 @@ class ClientCollection {
     }
     synchronized static void removeClient(Socket socket) {
         Iterator<Client> iterator = clients.iterator();
-        if(iterator.hasNext()) {
+        while(iterator.hasNext()) {
             Client client = iterator.next();
-            if(socket.equals(client.socket())) clients.remove(client);
+            if(socket.equals(client.socket())) {
+                iterator.remove();
+                break;
+            }
         }
     }
 }
