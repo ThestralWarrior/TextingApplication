@@ -5,7 +5,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-public class TextingClient {
+public class TextingClientCLI {
     public static void main(String[] args) {
         Socket soc = null;
         String ipAddress = "localhost";
