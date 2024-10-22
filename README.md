@@ -1,4 +1,4 @@
-# TextingApplication
+# Groupchat
 This is a project to allow users to run their own group chat servers and allow others along with themselves to connect to each others' servers to communicate.
 
 ## Outputs
